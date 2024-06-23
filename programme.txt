@@ -1,0 +1,343 @@
+import itertools
+import numpy as np
+
+# Matrice de distances
+distances = np.array([[0.  , 0.31, 1.27, 2.5 , 0.98, 0.65, 1.42, 1.52],
+ [0.31, 0.  , 1.14, 2.25, 0.73, 0.69, 1.18, 1.28],
+ [1.27, 1.14, 0.  , 2.88, 1.21, 0.62, 1.99, 2.1 ],
+ [2.5 , 2.25, 2.88, 0.  , 1.7 , 2.7 , 1.2 , 1.39],
+ [0.98, 0.73, 1.21, 1.7 , 0.  , 1.04, 0.87, 1.04],
+ [0.65, 0.69, 0.62, 2.7 , 1.04, 0.  , 1.76, 1.86],
+ [1.82, 1.18, 1.99, 1.2 , 0.87, 1.76, 0.  , 0.31],
+ [1.52, 1.28, 2.1 , 1.39, 1.04, 1.86, 0.31, 0.  ]])
+
+
+def calculer_distance_chemin(chemin, distances):
+    distance_totale = 0
+    for i in range(len(chemin) - 1):
+        distance_totale +=distances[chemin[i]] [chemin[i+1]]
+    distance_totale += distances[-1][0]
+    return distance_totale
+
+def trouver_trajet_optimal(nombre_villes, distances):
+    villes = range(nombre_villes)
+    trajet_optimal = None
+    distance_minimale = float('inf')
+
+    for permutation in itertools.permutations(villes):
+        distance_actuelle = calculer_distance_chemin(permutation, distances)
+        if distance_actuelle < distance_minimale:
+            distance_minimale = distance_actuelle
+            trajet_optimal = permutation
+
+    return trajet_optimal, distance_minimale
+
+# Exemple d'utilisation
+nombre_villes = len(distances)
+
+trajet_optimal, distance_minimale = trouver_trajet_optimal(nombre_villes, distances)
+print("Trajet optimal:", trajet_optimal)
+print("Distance minimale:", distance_minimale)
+
+
+d=  [[0.  , 0.31, 1.27, 2.5 , 0.98, 0.65, 1.42, 1.52],
+ [0.31, 0.  , 1.14, 2.25, 0.73, 0.69, 1.18, 1.28],
+ [1.27, 1.14, 0.  , 2.88, 1.21, 0.62, 1.99, 2.1 ],
+ [2.5 , 2.25, 2.88, 0.  , 1.7 , 2.7 , 1.2 , 1.39],
+ [0.98, 0.73, 1.21, 1.7 , 0.  , 1.04, 0.87, 1.04],
+ [0.65, 0.69, 0.62, 2.7 , 1.04, 0.  , 1.76, 1.86],
+ [1.82, 1.18, 1.99, 1.2 , 0.87, 1.76, 0.  , 0.31],
+ [1.52, 1.28, 2.1 , 1.39, 1.04, 1.86, 0.31, 0.  ]]
+N = len(d)
+
+def Totallongeur(V):
+  position = []
+  longueur_totale = 0
+  for j in range(N):
+    for i in range(N):
+      if V[i][j]==1:
+        position.append(i)
+  print(position)
+  for i in range(N - 1):
+    ville_actuelle = position[i]
+    prochaine_ville = position[i + 1]
+    longueur_totale += d[ville_actuelle][prochaine_ville]
+  longueur_totale += d[position[N - 1]][position[0]]
+
+  return longueur_totale
+
+def Testofsolution (V):
+      for x in range(N):
+            if (np.sum ((np.mat(V)) [x,:])==1 and np.sum ((np.mat(V)) [:,x])==1):
+                ok = 1
+            else:
+              ok = 0
+              break
+      if ok == 1:
+        return 1
+      return 0
+
+
+def CHN(alpha, phi, epsilon,T,ib):
+    d= [[0.  , 0.31, 1.27, 2.5 , 0.98, 0.65, 1.42, 1.52],
+ [0.31, 0.  , 1.14, 2.25, 0.73, 0.69, 1.18, 1.28],
+ [1.27, 1.14, 0.  , 2.88, 1.21, 0.62, 1.99, 2.1 ],
+ [2.5 , 2.25, 2.88, 0.  , 1.7 , 2.7 , 1.2 , 1.39],
+ [0.98, 0.73, 1.21, 1.7 , 0.  , 1.04, 0.87, 1.04],
+ [0.65, 0.69, 0.62, 2.7 , 1.04, 0.  , 1.76, 1.86],
+ [1.82, 1.18, 1.99, 1.2 , 0.87, 1.76, 0.  , 0.31],
+ [1.52, 1.28, 2.1 , 1.39, 1.04, 1.86, 0.31, 0.  ]]
+    N = len(d)
+    u0=0.02
+    q=0.1
+    uEpsilon=(u0/2)*mt.log(epsilon/(1-epsilon))
+    Vt=np.empty((N**2))
+    Ut=np.empty((N**2))
+    V=np.empty((N,N))
+    DU=np.empty((N**2))
+    DV=np.empty((N**2))
+    UxitPlusDeltaT=np.empty((N**2))
+    VxitPlusDeltaT=np.empty((N**2))
+    DUxit=np.empty((N**2))
+    DVxit=np.empty((N**2))
+    #Vt[:,]= 0.99+((10**-8)*random.uniform(-0.5,0.5))
+    Vt=random.random(N**2)
+    Ut=((u0/2)*np.log(Vt/(1-Vt)))
+    DU=np.dot(T,Vt)+ib
+    DV=(2/u0)*Vt*(1-Vt)*DU
+    iter=0
+    R_ITER= 10
+    def calculs1():
+        som = np.vdot(DV,DU)
+        return som
+    def calculs2():
+        som=np.vdot(np.dot(T,DV),DV)
+        som = -som
+        return som
+    while True:
+        #maxe=0
+        deltaT=10**100
+        for i in range(N**2):
+            DUxit[i]=DU[i]
+            if((Vt[i] == 0) or (Vt[i]==1)):
+                if ((Vt[i]==0 and DUxit[i]>0) or (Vt[i]==1 and DUxit[i]<0)):
+                    deltaT=min(deltaT,((abs(Ut[i])-uEpsilon)/(abs(DUxit[i]))))
+            else:
+                DVxit[i] = DV[i]
+                if DVxit[i]<0:
+                    deltaT = min(deltaT,(-Vt[i]/DVxit[i]))
+                if DVxit[i]>0:
+                    deltaT = min(deltaT,(1-Vt[i]/DVxit[i]))
+        sw_optimale = 0
+        if calculs2()>0:
+            if deltaT<(calculs1()/calculs2()):
+                deltaT = (calculs1()/calculs2())
+                sw_optimale = 1
+        if  ((iter<R_ITER) and (sw_optimale == 0)):
+            deltaT = q*deltaT
+        for i in range(N**2):
+            if ((Vt[i] == 0) or (Vt[i] == 1)):
+                UxitPlusDeltaT[i] = Ut[i] + DU[i]*deltaT
+                aid = mt.tanh(UxitPlusDeltaT[i]/u0)
+                VxitPlusDeltaT[i] = 0.5*(1+aid)
+            else:
+                if (((Vt[i] + DV[i] * deltaT) >= epsilon) and ((Vt[i] + DV[i] * deltaT <= (1 - epsilon)))):
+                    VxitPlusDeltaT[i] = Vt[i] + DV[i] * deltaT
+                else:
+                    Ut[i] = ((u0/2)*mt.log(Vt[i]/(1-Vt[i])))
+                    UxitPlusDeltaT[i] = Ut[i] + DU[i] * deltaT
+                    if (Vt[i] + DV[i] * deltaT) < epsilon:
+                        VxitPlusDeltaT[i] = 0
+                    if (Vt[i] + DV[i] * deltaT) > (1-epsilon):
+                        VxitPlusDeltaT[i] = 1
+        maxe=max((abs(Vt - VxitPlusDeltaT)))
+        Vt = VxitPlusDeltaT.copy()
+        Ut = UxitPlusDeltaT.copy()
+        iter = iter+1
+        V=(np.mat(Vt)).reshape(N,N)
+        if (Testofsolution (V)==1  or maxe<epsilon**1.5 or iter>900):
+            break
+        DU=np.dot(T,Vt)+ib
+        DV=(2/u0)*Vt*(1-Vt)*DU
+    V=np.array((np.mat(Vt)).reshape(N,N))
+    if Testofsolution (V)==1:
+      #print(V)
+      #print("longeurrrrrrrrrrrrr estttttttttttttttt" , Totallongeur(V))
+      b = Totallongeur(V)
+    else:
+      b = 0
+    return Vt,b
+
+def calculTandIb(alpha, phi):
+    d=[[0.  , 0.31, 1.27, 2.5 , 0.98, 0.65, 1.42, 1.52],
+ [0.31, 0.  , 1.14, 2.25, 0.73, 0.69, 1.18, 1.28],
+ [1.27, 1.14, 0.  , 2.88, 1.21, 0.62, 1.99, 2.1 ],
+ [2.5 , 2.25, 2.88, 0.  , 1.7 , 2.7 , 1.2 , 1.39],
+ [0.98, 0.73, 1.21, 1.7 , 0.  , 1.04, 0.87, 1.04],
+ [0.65, 0.69, 0.62, 2.7 , 1.04, 0.  , 1.76, 1.86],
+ [1.82, 1.18, 1.99, 1.2 , 0.87, 1.76, 0.  , 0.31],
+ [1.52, 1.28, 2.1 , 1.39, 1.04, 1.86, 0.31, 0.  ]]
+    N = len(d)
+    epsilone=0.0005
+    ib=np.zeros((N**2))
+    T=np.empty((N**2,N**2))
+    def delta(a,b):
+        if a==b:
+            return 1
+        return 0
+
+    minn= np.mat(d)[np.mat(d)>0].min()
+    phiF=(3*alpha*(np.max(d)))-(alpha*minn)+(2*epsilone)
+    phiC=(3*alpha*(np.max(d)))+(2*epsilone)
+    gamma=1/2*((6*alpha*(np.max(d)))-(alpha*minn)+phi)+(2*epsilone)
+    l=-1
+    beta=-1/2*((12*alpha*(np.max(d)))-(alpha*minn)+(2*N-1)*phi)-(3*epsilone)
+    somme=beta+gamma
+    bais=-somme
+    for x in range(N):
+        for i in range(N):
+            c=-1
+            l=l+1
+            for y in range(N):
+                for j in range(N):
+                    c=c+1
+                    s=(delta(x,y)*phiF+delta(i,j)*phiC+phi-(2*delta(x,y)*delta(i,j)*gamma)+(alpha*d[x][y]*(delta(i,j+1)+delta(i,j-1))))
+                    T[l][c]=-s
+    for x in range(N**2):
+        ib[x]=bais
+    return T,ib
+
+
+# Fonction de pénalité E à optimiser
+def penalty_function(alpha, phi, epsilon):
+    a  = calculTandIb(alpha, phi)
+    T = a[0]
+    ib = a[1]
+    v = CHN(alpha, phi, epsilon,T,ib)
+    v_t = np.transpose(v[0])
+    terme_quadratique = -0.5 * np.dot(np.dot(v_t, T), v[0])
+    terme_lineaire = -np.dot(np.transpose(ib), v[0])
+    E = terme_quadratique + terme_lineaire
+    return E,v[1]
+
+# Fonction objectif pour Optuna
+def objective(alpha, phi, epsilon):
+    # Évaluer la fonction de pénalité E avec les hyperparamètres
+    p = penalty_function(alpha, phi, epsilon)
+    penalty_value = p[0]
+    b = p[1]
+
+    return -penalty_value,b   # Négatif car Optuna minimise la fonction objective
+
+
+# Fonction de mise à jour des hyperparamètres (Policy Gradient)
+def update_hyperparameters(alpha, phi, epsilon, grad_alpha, grad_phi, grad_epsilon, learning_rate):
+    alpha += learning_rate * np.array(grad_alpha)# grad_alpha
+    phi += learning_rate * np.array(grad_phi) #grad_phi
+    epsilon *= learning_rate * np.array(grad_epsilon)  #grad_epsilon
+    return alpha, phi, epsilon
+
+# Algorithme d'optimisation des hyperparamètres par apprentissage par renforcement
+def optimize_hyperparameters(num_iterations=100, learning_rate=0.01):
+    alpha, phi, epsilon = 0.5, 0.05, 1e-5  # Initialisation des hyperparamètres
+    best_params =  [alpha, phi, epsilon]
+    E_stock = []
+    alpha_stock = []
+    phi_stock = []
+    epsilon_stock = []
+    b_stock = []
+    time_stock = []
+
+    for iteration in range(num_iterations):
+        # Utiliser Optuna pour optimiser les hyperparamètres
+        #study = optuna.create_study(direction='maximize')
+        #study.optimize(objective, n_trials=10)  # Nombre arbitraire de tentatives
+        #trial = study.best_trial
+        print('iteration :', iteration)
+        debut = time.time()
+        alpha = random.uniform(0.5, 1.0)
+        phi = random.uniform( 0.01, 0.1)
+        epsilon = random.uniform( 1e-6, 1e-4)
+        p = objective(alpha, phi, epsilon)
+        objective_value = p[0]
+        print('objective_value =============================',objective_value, p[1])
+
+
+
+        # Calculer les gradients de la politique (à remplacer par votre propre logique)grad_alpha = trial.distributions['alpha'].log_prob_gradient(trial.params['alpha'])
+        grad_alpha = 0.5* p[1]   #np.gradient(objective_value, alpha)
+        grad_phi = 0.5* N*N   # np.gradient(objective_value, phi)
+        grad_epsilon = 1 #np.gradient(objective_value, epsilon)
+        ######################################print('Gradient :',grad_alpha,grad_phi,grad_epsilon)
+
+
+        #alpha_params = trial.params['alpha']
+        #grad_alpha = grad_alpha = np.gradient(objective, alpha_params)
+
+
+        #grad_alpha = trial.distributions['alpha'].gradient(trial.params['alpha'])
+        #phi_params = trial.params['phi']
+        #grad_phi = np.gradient(objective, phi_params)
+        #grad_phi = trial.distributions['phi'].gradient(trial.params['phi'])
+        #grad_epsilon = trial.distributions['epsilon'].gradient(trial.params['epsilon'])
+        #epsilon_params = trial.params['epsilon']
+        #grad_epsilon =np.gradient(objective, epsilon_params)
+
+        # Mettre à jour les hyperparamètres avec Policy Gradient
+        alpha, phi, epsilon = update_hyperparameters(alpha, phi, epsilon, grad_alpha, grad_phi, grad_epsilon, learning_rate)
+        #######################################print('Mettre à jour les hyperparamètres avec Policy Gradient:',alpha,phi,epsilon)
+
+        Value = objective(alpha, phi, epsilon)
+        value =  Value[0]
+        fin = time.time()
+        #######################################print('value',value ,'objective', objective(best_params[0], best_params[1], best_params[2])[0])
+        # Sauvegarder les meilleurs hyperparamètres jusqu'à présent
+        if value > objective(best_params[0], best_params[1], best_params[2])[0]:
+            best_params = [alpha, phi, epsilon]
+            # pour stocker les nergey function
+            E_stock.append(-value)
+            alpha_stock.append(alpha)
+            phi_stock.append(phi)
+            epsilon_stock.append(epsilon)
+            b_stock.append(Value[1])
+            temps_execution = fin-debut
+            time_stock.append(temps_execution)
+
+        #########################################print(f"Iteration {iteration + 1}/{num_iterations}, Best Objective Value: {objective(best_params[0], best_params[1], best_params[2])[0]}")
+
+    return best_params,E_stock,alpha_stock, phi_stock,epsilon_stock,b_stock,time_stock
+
+# Exécution de l'optimisation des hyperparamètres
+best_hyperparams = optimize_hyperparameters(num_iterations=100, learning_rate=0.01)
+print("Meilleurs Hyperparamètres :", best_hyperparams[0])
+
+print("le stock de E est :  ", best_hyperparams[1])
+print("le stock de alpha est :  ", best_hyperparams[2])
+print("le stock de phi est :  ", best_hyperparams[3])
+print("le stock de epsilon est :  ", best_hyperparams[4])
+print("le stock de b est :  ", best_hyperparams[5])
+print("le stock de time est :  ", best_hyperparams[6])
+
+print(best_hyperparams[6])
+def variation_plot():
+    # Define the range of alpha values to test
+    #alpha_values = np.linspace(min(alpha), max(alpha))
+    alpha_list = best_hyperparams[2]
+    b_list = best_hyperparams[6]
+    #b_list = sorted(b_list, reverse=True)
+    listt = list(range(len(b_list)))
+    print(listt)
+
+
+
+    # Plot the variation
+    # plt.plot(alpha_list, E_list, marker='o')
+    # plt.xlabel('Variation of alpha')
+    plt.plot(listt, b_list, marker='o')
+    plt.xlabel('Iteration')
+    plt.ylabel('Time')
+    plt.grid(True)
+    plt.show()
+
+# Call the function to generate the plot
+variation_plot()
